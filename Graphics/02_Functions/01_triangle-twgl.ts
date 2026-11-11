@@ -9,6 +9,8 @@
 import * as twgl from 'twgl-base.js';
 
 // Vertex Shader as a string
+//NEVER MODIFY THIS LINE
+// attributes
 const vsGLSL = `#version 300 es
 in vec4 a_position;
 in vec4 a_color;
@@ -31,7 +33,7 @@ out vec4 outColor;
 
 void main() {
     outColor = v_color;
-    //outColor = vec4(1, 0, 1, 1);
+    //outColor = vec4(1.00, 0.53, 0.59, 1.0);
 }
 `;
 
@@ -72,9 +74,14 @@ function generateData(): twgl.Arrays {
             // Two components for the coordinates in X and Y
             numComponents: 2,
             data: new Float32Array([
-                 0.0,   0.7,
-                 0.5,  -0.7,
-                -0.5,  -0.7,
+                 0.6,   0.3,
+                 0.5,  -0.9,
+                -0.8,  -0.9,
+
+                -0.7,   0.4,
+                0.5,  0.9,
+                -0.7,  -0.5,
+
             ]),
         },
         a_color: {
@@ -91,8 +98,12 @@ function generateData(): twgl.Arrays {
             // To pass integer values, the type must be specified
             data: new Uint8Array([
                 255, 0, 0, 255,
-                0, 255, 0, 255,
-                0, 0, 255, 255,
+                255, 0, 0, 255,
+                255, 0, 0, 255,
+
+                128, 0, 0, 255,
+                100, 0, 0, 255,
+                128, 0, 0, 255,
             ]),
         },
     };

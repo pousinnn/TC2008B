@@ -50,7 +50,7 @@ function main(): void {
 
     const programInfo = twgl.createProgramInfo(gl, [vsGLSL, fsGLSL]);
 
-    const sides = 6;
+    const sides = 7
     const arrays = generateData(sides);
     const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
     const vao = twgl.createVAOFromBufferInfo(gl, programInfo, bufferInfo);
@@ -91,9 +91,9 @@ function generateData(sides: number): twgl.Arrays {
         positionData.push(y);
 
         // Generate a random color for the vertex
-        colorData.push(Math.random());
-        colorData.push(Math.random());
-        colorData.push(Math.random());
+        colorData.push(0.4);
+        colorData.push(0.1);
+        colorData.push(0.3);
         colorData.push(1);
 
         // Define the triangles, in counter clockwise order

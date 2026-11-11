@@ -49,11 +49,12 @@ function drawScene(
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
     // Variable to define the translation of the object
-    const translation = [100, 300];
+    const translation = [150, 300];
 
     // TODO: Add the translation as another uniform
     let uniforms =
     {
+        u_translation: translation, 
         u_resolution: [gl.canvas.width, gl.canvas.height],
         u_color: [Math.random(), Math.random(), Math.random(), 1],
     }
