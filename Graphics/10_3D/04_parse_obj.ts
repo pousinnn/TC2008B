@@ -181,6 +181,7 @@ class ObjLoadScene extends Scene {
 
         // Selector for the model to be displayed
         gui.add(this.settings, 'currentModel', Object.keys(this.objStrings))
+        //gui.add(this, 'order', ['scale -> rotate -> translate', 'trs'])
             .onChange( (value: string) => {
                 this.currentObject = this.getObject(value);
             });

@@ -4,12 +4,14 @@
  * The twgl and lil-gui libraries are installed with npm
  *
  * Gilberto Echeverria
- * 2024-07-17
+ * Pau Cortez
+ * 16-11-2026
  */
 
 
 'use strict';
 
+//import the libraries and functions
 import * as twgl from 'twgl-base.js';
 import GUI from 'lil-gui';
 import { shapeF_centered, diamond } from '../libs/shapes.js';
@@ -25,20 +27,23 @@ import fsGLSL from './fs_flat_color.glsl?raw';
 /*
  * Subclass of Scene with the particular objects and settings for this example.
  * Specifies the objects that will be used, and the UI operations available.
+ * we create the scene (face and pivot) - to move, rotate and scale
  */
 class RotationScene extends Scene {
 //class RotationScene extends Scene<'model' | 'pivot'> {
+//intialize scene
     constructor(gl: WebGL2RenderingContext) {
         super(gl, vsGLSL, fsGLSL);
 
         // Create the objects for this scene
         const model = this.addObject('model', shapeF_centered(),
             randomColor());
+            //set initial psition
         model.transforms.t.x = gl.canvas.width / 2;
         model.transforms.t.y = gl.canvas.height / 2;
 
-        const pivot = this.addObject('pivot', diamond(30),
-            [ 0.6, 0.6, 0.6, 1]);
+        //create pivot (diamond)
+        const pivot = this.addObject('pivot', diamond(30), [ 0.79, 0.46, 1.00, 1.0]);
         pivot.transforms.t.x = gl.canvas.width / 2;
         pivot.transforms.t.y = gl.canvas.height / 2;
     }
@@ -46,10 +51,11 @@ class RotationScene extends Scene {
     // Method to draw the scene.
     protected render(): void {
         const { gl, programInfo } = this;
+        //model and pivot
         const model = this.getObject('model');
         const pivot = this.getObject('pivot');
 
-        // Vector to the position of the model
+        //position and scale
         const v2_trans: Vec2 = V2.create(model.transforms.t.x, model.transforms.t.y);
         const v2_scale: Vec2 = V2.create(model.transforms.s.x, model.transforms.s.y);
 
@@ -57,21 +63,30 @@ class RotationScene extends Scene {
         const v2_pivot_to_center: Vec2 = V2.create(-pivot.transforms.t.x,
                                                    -pivot.transforms.t.y);
         // Vector to translate the pivot back to its original position
-        const v2_center_to_pivot: Vec2 = V2.create(pivot.transforms.t.x,
-                                                   pivot.transforms.t.y);
+        const v2_center_to_pivot: Vec2 = V2.create(pivot.transforms.t.x, pivot.transforms.t.y);
 
 
         // Transform matrices for the model
         // TODO: Create the matrices necessary
-
-
-
-        // Create a composite transform matrix
+        //https://threejs.org/docs/pages/TSL.html
+        //scale, rotation and trnslation
+        const scaleMatrix: Mat3 = M3.scale(v2_scale);
+        //rotating
+        const moveToPivot: Mat3 = M3.translation(v2_pivot_to_center); 
+        const moveBackToPivot: Mat3 = M3.translation(v2_center_to_pivot); 
+        const rotationMatrix: Mat3 = M3.rotation(model.transforms.rr.z);
+        //translation matrix
+        const translationMatrix: Mat3 = M3.translation(v2_trans);
+        
+        // to transform
         let modelTransforms: Mat3 = M3.identity();
-        // TODO: Multiply the matrices in the correct order to obtain the required results
-
-
-
+        // multiply the matrices in order
+        modelTransforms = M3.multiply(scaleMatrix, modelTransforms);
+        modelTransforms = M3.multiply(translationMatrix, modelTransforms);
+        // rotation (origin, rotation and moving back)
+        modelTransforms = M3.multiply(moveToPivot, modelTransforms);
+        modelTransforms = M3.multiply(rotationMatrix, modelTransforms);
+        modelTransforms = M3.multiply(moveBackToPivot, modelTransforms);
 
         gl.useProgram(programInfo.program);
 
